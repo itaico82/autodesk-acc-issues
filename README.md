@@ -40,6 +40,8 @@ AUTODESK_CLIENT_SECRET=your_client_secret
 
 ## Usage
 
+### Authentication
+
 1. Start the OAuth server:
 ```bash
 uvicorn oauth_server:app --reload --port 8000
@@ -50,15 +52,79 @@ uvicorn oauth_server:app --reload --port 8000
 http://127.0.0.1:8000/login
 ```
 
-3. List issues for a project:
+This will redirect you to Autodesk's login page. After successful authentication, you'll be redirected back to the local server.
+
+### Getting Issues
+
+#### Basic Usage
+
+List all issues for a project:
 ```bash
 python list_issues.py --project-id YOUR_PROJECT_ID
 ```
 
-4. Export all accessible projects:
+The project ID can be found in your ACC project URL or through the `--export-projects` command.
+
+#### Advanced Options
+
+1. Export all accessible projects:
 ```bash
-python list_issues.py --project-id YOUR_PROJECT_ID --export-projects
+python list_issues.py --export-projects
 ```
+This will create a JSON file with all projects you have access to.
+
+2. Filter issues by status:
+```bash
+python list_issues.py --project-id YOUR_PROJECT_ID --status open
+```
+Available statuses: open, closed, draft
+
+3. Filter issues by date:
+```bash
+python list_issues.py --project-id YOUR_PROJECT_ID --since 2024-01-01
+```
+
+4. Export issues to JSON:
+```bash
+python list_issues.py --project-id YOUR_PROJECT_ID --output issues.json
+```
+
+5. Get detailed issue information:
+```bash
+python list_issues.py --project-id YOUR_PROJECT_ID --issue-id ISSUE_ID
+```
+
+#### Issue Fields
+
+When listing issues, the following information is displayed:
+- Display ID
+- Title
+- Status
+- Created date
+- Created by
+- Assigned to
+- Due date (if set)
+- Priority
+- Root cause (if specified)
+- Location
+- Number of comments
+- Number of attachments
+
+#### Error Handling
+
+Common error scenarios and solutions:
+
+1. "No active session found":
+   - Ensure the OAuth server is running
+   - Re-authenticate at http://127.0.0.1:8000/login
+
+2. "Project not found":
+   - Verify the project ID
+   - Check your permissions for the project
+   - Use --export-projects to list accessible projects
+
+3. "Token expired":
+   - Re-authenticate through the OAuth server
 
 ## Project Structure
 
